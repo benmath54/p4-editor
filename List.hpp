@@ -17,31 +17,71 @@ class List {
 public:
 
   //EFFECTS:  returns true if the list is empty
-  bool empty() const;
+  bool empty() const{
+    if(first == nullptr){
+      return true;
+    }
+    return false;
+  }
 
   //EFFECTS: returns the number of elements in this List
   //HINT:    Traversing a list is really slow. Instead, keep track of the size
   //         with a private member variable. That's how std::list does it.
-  int size() const;
+  int size() const{
+    return _size;
+  }
 
   //REQUIRES: list is not empty
   //EFFECTS: Returns the first element in the list by reference
-  T & front();
+  T & front(){
+    assert(first != nullptr);
+    return first->datum;
+  }
 
   //REQUIRES: list is not empty
   //EFFECTS: Returns the last element in the list by reference
-  T & back();
+  T & back(){
+    assert(last != nullptr);
+    return last->datum;
+  }
 
   //EFFECTS:  inserts datum into the front of the list
-  void push_front(const T &datum);
+  void push_front(const T &datum){
+    Node new_f = new Node;
+    new_f.datum = datum;
+    if(_size == 0){new_f.next = nullptr; last == &new_f;}
+    else{new_f.next = first;}
+    new_f.prev = nullptr;
+    first = &new_f;
+
+    _size++;
+  }
 
   //EFFECTS:  inserts datum into the back of the list
-  void push_back(const T &datum);
+  void push_back(const T &datum){
+    Node new_b = new Node;
+    new_b.datum = datum;
+    if(_size == 0){new_b.prev = nullptr; first == &new_b;}
+    else{new_b.prev = last;}
+    new_b.first = nullptr;
+    last = &new_b;
+
+    _size++;
+  }
 
   //REQUIRES: list is not empty
   //MODIFIES: may invalidate list iterators
   //EFFECTS:  removes the item at the front of the list
-  void pop_front();
+  void pop_front(){
+    assert(_size != 0);
+
+    Node* to_del = first;
+    first = first->next;
+    if(_size <= 2){last = first;}
+    delete to_del;
+
+    _size--;
+  }
 
   //REQUIRES: list is not empty
   //MODIFIES: may invalidate list iterators
@@ -71,6 +111,7 @@ private:
 
   Node *first;   // points to first Node in list, or nullptr if list is empty
   Node *last;    // points to last Node in list, or nullptr if list is empty
+  size_t _size;
 
 public:
   ////////////////////////////////////////
