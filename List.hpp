@@ -86,16 +86,47 @@ public:
   //REQUIRES: list is not empty
   //MODIFIES: may invalidate list iterators
   //EFFECTS:  removes the item at the back of the list
-  void pop_back();
+  void pop_back(){
+    assert(_size != 0);
+
+    Node* to_del = last;
+    last = last->prev;
+    if(_size <= 2){first = last;}
+    delete to_del;
+
+    _size--;
+  }
 
   //MODIFIES: may invalidate list iterators
   //EFFECTS:  removes all items from the list
-  void clear();
+  void clear(){
+    node_ptr = nullptr;
 
-  // You should add in a default constructor, destructor, copy constructor,
-  // and overloaded assignment operator, if appropriate. If these operations
-  // will work correctly without defining these, you should omit them. A user
-  // of the class must be able to create, copy, assign, and destroy Lists.
+    while(_size > 0){pop_front;}
+  }
+
+  // def ctor
+  List()
+  :first(nullptr), last(nullptr), _size(0){ }
+
+  //copy ctor
+  List(const List &copyctor)
+  : first(nullptr), last(nullptr), _size(0){
+    copy_all(copyctor);
+  }
+
+  //dtor
+  ~List(){
+    clear();
+  }
+
+  //assignment op
+  List & operator=(const List &rhs){
+    if(this == &rhs){return *this;}
+    clear();
+    copy_all(rhs);
+    return *this;
+  }
 
 private:
   //a private type
@@ -107,7 +138,12 @@ private:
 
   //REQUIRES: list is empty
   //EFFECTS:  copies all nodes from other to this
-  void copy_all(const List<T> &other);
+  void copy_all(const List<T> &other){
+    _size = other._size;
+    for(Node* p = other.first; p; p = p->next){
+      push_back(p->datum);
+    }
+  }
 
   Node *first;   // points to first Node in list, or nullptr if list is empty
   Node *last;    // points to last Node in list, or nullptr if list is empty
@@ -198,7 +234,7 @@ public:
     // add any additional necessary member variables here
 
 
-    // add any friend declarations here
+    friend class List;
 
 
     // construct an Iterator at a specific position in the given List
