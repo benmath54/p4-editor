@@ -49,8 +49,8 @@ public:
   void push_front(const T &datum){
     Node new_f = new Node;
     new_f.datum = datum;
-    if(_size == 0){new_f.next = nullptr; last == &new_f;}
-    else{new_f.next = first;}
+    if(_size == 0){new_f.next = nullptr; last = &new_f;}
+    else{new_f.next = first;first->prev = &new_f;}
     new_f.prev = nullptr;
     first = &new_f;
 
@@ -61,9 +61,9 @@ public:
   void push_back(const T &datum){
     Node new_b = new Node;
     new_b.datum = datum;
-    if(_size == 0){new_b.prev = nullptr; first == &new_b;}
-    else{new_b.prev = last;}
-    new_b.first = nullptr;
+    if(_size == 0){new_b.prev = nullptr; first = &new_b;}
+    else{new_b.prev = last;last->next = &new_b;}
+    new_b.next = nullptr;
     last = &new_b;
 
     _size++;
@@ -100,9 +100,7 @@ public:
   //MODIFIES: may invalidate list iterators
   //EFFECTS:  removes all items from the list
   void clear(){
-    node_ptr = nullptr;
-
-    while(_size > 0){pop_front;}
+    while(_size > 0){pop_front();}
   }
 
   // def ctor
@@ -158,13 +156,33 @@ public:
     // Add a default constructor here. The default constructor must set both
     // pointer members to null pointers.
 
+    Iterator()
+    :list_ptr(nullptr), node_ptr(nullptr){ }
 
+    T & operator*() const{
+      assert(node_ptr);
+      return node_ptr->datum;
+    }
 
-    // Add custom implementations of the destructor, copy constructor, and
-    // overloaded assignment operator, if appropriate. If these operations
-    // will work correctly without defining these, you should omit them. A user
-    // of the class must be able to copy, assign, and destroy Iterators.
+    Iterator & operator++() {
+      assert(node_ptr);
+      node_ptr = node_ptr->next;
+      return *this;
+    }
 
+    Iterator operator++(int){
+      Iterator copy = *this;
+      operator++();
+      return copy;
+    }
+
+    bool operator==(Iterator rhs) const{
+      return node_ptr == rhs.node_ptr;
+    }
+
+    bool operator!=(Iterator rhs) const{
+      return node_ptr != rhs.node_ptr;
+    }
 
 
     // Your iterator should implement the following public operators:
@@ -185,6 +203,8 @@ public:
     //     violates the REQURES clause.
     // Note: comparing both the list and node pointers should be
     // sufficient to meet these requirements.
+
+
 
 
 
@@ -232,34 +252,74 @@ public:
     const List *list_ptr; //pointer to the List associated with this Iterator
     Node *node_ptr; //current Iterator position is a List node
     // add any additional necessary member variables here
-
-
     friend class List;
-
-
     // construct an Iterator at a specific position in the given List
-    Iterator(const List *lp, Node *np);
+    Iterator(const List *lp, Node *np)
+    :list_ptr(lp), node_ptr(np) { }
 
   };//List::Iterator
   ////////////////////////////////////////
 
   // return an Iterator pointing to the first element
-  Iterator begin() const;
+  Iterator begin() const{
+    return Iterator(this,first);
+  }
 
   // return an Iterator pointing to "past the end"
-  Iterator end() const;
+  Iterator end() const{
+    return Iterator(this,nullptr);
+  }
 
   //REQUIRES: i is a valid, dereferenceable iterator associated with this list
   //MODIFIES: may invalidate other list iterators
   //EFFECTS: Removes a single element from the list container.
   //         Returns An iterator pointing to the element that followed the
   //         element erased by the function call
-  Iterator erase(Iterator i);
+  Iterator erase(Iterator i){
+    if(i == begin()){
+      i++;
+      pop_front();
+      return i;
+    }
+    Iterator n0 = i;
+    Iterator n2 = n0--;
+    Iterator n1 = n2++;
+
+    n0.node_ptr->next = n1.node_ptr->next;
+    n2.node_ptr->prev = n1.node_ptr->prev;
+
+    delete n1;
+    return n2;
+  }
 
   //REQUIRES: i is a valid iterator associated with this list
   //EFFECTS: Inserts datum before the element at the specified position.
   //         Returns an iterator to the the newly inserted element.
-  Iterator insert(Iterator i, const T &datum);
+  Iterator insert(Iterator i, const T &datum){
+    if(i == begin()){
+      push_front(datum);
+      i--;
+      return i;
+    }
+    if(i == end()){
+      push_back(datum);
+      Iterator edgeb(this,last);
+      return edgeb;
+    }
+
+    Iterator n2 = i--;
+    Iterator n0 = i;
+    Node n1 = new Node;
+    n1.datum = datum;
+
+    n1.next = n0.node_ptr->next;
+    n0.node_ptr->next = &n1;
+    
+    n1.prev = n2.node_ptr->prev;
+    n2.node_ptr->prev = &n1;
+
+    return Iterator(this,&n1);
+  }
 
 };//List
 
