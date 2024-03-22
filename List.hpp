@@ -47,24 +47,24 @@ public:
 
   //EFFECTS:  inserts datum into the front of the list
   void push_front(const T &datum){
-    Node new_f = new Node;
-    new_f.datum = datum;
-    if(_size == 0){new_f.next = nullptr; last = &new_f;}
-    else{new_f.next = first;first->prev = &new_f;}
-    new_f.prev = nullptr;
-    first = &new_f;
+    Node* new_f = new Node;
+    new_f->datum = datum;
+    if(_size == 0){new_f->next = nullptr; last = new_f;}
+    else{new_f->next = first;first->prev = new_f;}
+    new_f->prev = nullptr;
+    first = new_f;
 
     _size++;
   }
 
   //EFFECTS:  inserts datum into the back of the list
   void push_back(const T &datum){
-    Node new_b = new Node;
-    new_b.datum = datum;
-    if(_size == 0){new_b.prev = nullptr; first = &new_b;}
-    else{new_b.prev = last;last->next = &new_b;}
-    new_b.next = nullptr;
-    last = &new_b;
+    Node* new_b = new Node;
+    new_b->datum = datum;
+    if(_size == 0){new_b->prev = nullptr; first = new_b;}
+    else{new_b->prev = last;last->next = new_b;}
+    new_b->next = nullptr;
+    last = new_b;
 
     _size++;
   }
@@ -309,16 +309,16 @@ public:
 
     Iterator n2 = i--;
     Iterator n0 = i;
-    Node n1 = new Node;
-    n1.datum = datum;
+    Node* n1 = new Node;
+    n1->datum = datum;
 
-    n1.next = n0.node_ptr->next;
-    n0.node_ptr->next = &n1;
+    n1->next = n0.node_ptr->next;
+    n0.node_ptr->next = n1;
     
-    n1.prev = n2.node_ptr->prev;
-    n2.node_ptr->prev = &n1;
+    n1->prev = n2.node_ptr->prev;
+    n2.node_ptr->prev = n1;
 
-    return Iterator(this,&n1);
+    return Iterator(this,n1);
   }
 
 };//List
