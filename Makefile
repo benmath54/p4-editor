@@ -3,6 +3,7 @@
 
 # Compiler
 CXX ?= g++
+CXXFLAGS += -fsanitize=address
 
 # Compiler flags
 CXXFLAGS ?= --std=c++17 -Wall -Werror -pedantic -g -Wno-sign-compare -Wno-comment
