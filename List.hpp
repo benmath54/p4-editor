@@ -76,7 +76,10 @@ public:
     assert(_size != 0);
 
     Node* to_del = first;
-    first = first->next;
+    if(_size ==1){
+      first = nullptr;
+    }
+    else{first = first->next;}
     if(_size <= 2){last = first;}
     delete to_del;
 
@@ -288,7 +291,7 @@ public:
     n0.node_ptr->next = n1.node_ptr->next;
     n2.node_ptr->prev = n1.node_ptr->prev;
 
-    delete n1;
+    delete n1.node_ptr;
     return n2;
   }
 

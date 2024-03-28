@@ -1,0 +1,12 @@
+{
+
+    "version": "0.2.0",
+    "configurations": [],
+    "setupCommands": [
+        {
+          "description": "Print polymorphic objects according to dynamic type",
+          "text": "set print object on"
+        }
+    ]
+    
+}
