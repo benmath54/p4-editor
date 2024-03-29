@@ -1,5 +1,15 @@
 {
     "files.associations": {
-        "type_traits": "cpp"
+        "type_traits": "cpp",
+        "deque": "cpp",
+        "list": "cpp",
+        "string": "cpp",
+        "vector": "cpp",
+        "array": "cpp",
+        "bitset": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "regex": "cpp",
+        "utility": "cpp"
     }
 }
