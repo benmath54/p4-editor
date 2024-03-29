@@ -61,8 +61,11 @@ public:
   void push_back(const T &datum){
     Node* new_b = new Node;
     new_b->datum = datum;
-    if(_size == 0){new_b->prev = nullptr; first = new_b;}
-    else{new_b->prev = last;last->next = new_b;}
+    if(_size == 0){new_b->prev = nullptr; first = last = new_b;}
+    else{
+      new_b->prev = last;
+      last->next = new_b;
+      }
     new_b->next = nullptr;
     last = new_b;
 
@@ -73,16 +76,13 @@ public:
   //MODIFIES: may invalidate list iterators
   //EFFECTS:  removes the item at the front of the list
   void pop_front(){
-    assert(_size != 0);
-
+    assert(_size != 0); 
     Node* to_del = first;
-    if(_size ==1){
-      first = nullptr;
+    first = first->next;
+    if (_size == 1) {
+        last = nullptr;
     }
-    else{first = first->next;}
-    if(_size <= 2){last = first;}
     delete to_del;
-
     _size--;
   }
 
@@ -91,12 +91,12 @@ public:
   //EFFECTS:  removes the item at the back of the list
   void pop_back(){
     assert(_size != 0);
-
     Node* to_del = last;
     last = last->prev;
-    if(_size <= 2){first = last;}
+    if (_size == 1) {
+        first = nullptr;
+    }
     delete to_del;
-
     _size--;
   }
 
