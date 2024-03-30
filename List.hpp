@@ -289,20 +289,21 @@ public:
   //         Returns An iterator pointing to the element that followed the
   //         element erased by the function call
   Iterator erase(Iterator i){
-    if(i == begin()){
-      i++;
-      pop_front();
-      return i;
-    }
-    Iterator n0 = i;
-    Iterator n2 = n0--;
-    Iterator n1 = n2++;
+    assert(i != end());
+    Node* to_del = i.node_ptr;
+    Node* nb = to_del->prev;
+    Node* nn = to_del->next;
 
-    n0.node_ptr->next = n1.node_ptr->next;
-    n2.node_ptr->prev = n1.node_ptr->prev;
+    if (nb){nb->next = nn;}
+    else{first = nn;}
 
-    delete n1.node_ptr;
-    return n2;
+    if (nn){nn->prev = nb;}
+    else{last = nb;}
+
+    delete to_del;
+    _size--;
+
+    return Iterator(this, nn);
   }
 
   //REQUIRES: i is a valid iterator associated with this list

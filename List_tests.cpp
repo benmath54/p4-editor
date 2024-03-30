@@ -217,7 +217,8 @@ TEST(test_iterator_end){
     l.push_back(5);   
 
     List<int>::Iterator i = l.end();
-    ASSERT_EQUAL(i,l.end());
+    --i;
+    ASSERT_EQUAL(*i,5);
 }
 
 TEST(test_iterator_eq){
@@ -258,18 +259,88 @@ TEST(test_iterator_pp){
     List<int> l;
     l.push_back(1);
     l.push_back(2);
+    l.push_back(4);
+    l.push_back(5);
+    l.push_back(6); 
+    List<int>::Iterator it1 = l.begin(); 
+    ++it1;
+    ASSERT_EQUAL(*it1,2);
+
+    ++(*it1);
+    ASSERT_EQUAL(*it1,3);
+    ASSERT_EQUAL(*(++it1),4);
+}
+
+TEST(test_iterator_p_pp){
+    List<int> l;
+    l.push_back(1);
+    l.push_back(2);
+    l.push_back(4);
+    l.push_back(5);
+    l.push_back(6); 
+    List<int>::Iterator it1 = l.begin(); 
+    it1++;
+    ASSERT_EQUAL(*it1,2);
+
+    ASSERT_EQUAL(*(it1++),2);
+    ASSERT_EQUAL(*it1,4);
+    it1++;
+    it1++;
+    ASSERT_EQUAL((*it1)++,6);
+    ASSERT_EQUAL(*it1,7);
+}
+
+TEST(test_iterator_erase){
+    List<int> l;
+    l.push_back(1);
+    l.push_back(2);
     l.push_back(3);
     l.push_back(4);
     l.push_back(5); 
     List<int>::Iterator it1 = l.begin(); 
-    ++it1;
-    ASSERT_EQUAL(*it1,2);
+
+    for(int i = 2;i <=5;i++){
+    List<int>::Iterator it2 = l.erase(it1);
+    ASSERT_EQUAL(*it2,i);
+    it1 = it2;
+    }
+    l.erase(it1);
+    ASSERT_TRUE(l.empty());
+}
+
+TEST(test_iterator_erase_end){
+    List<int> l;
+    l.push_back(1);
+    l.push_back(2);
+    l.push_back(3);
+    l.push_back(4);
+    l.push_back(5); 
+    List<int>::Iterator it1 = l.end();
+    it1--; 
+    ASSERT_EQUAL(*it1,5);
+
+    List<int>::Iterator it2 = l.erase(it1);
+    it2--;
+    ASSERT_EQUAL(*it2,4);
+    it1 = it2;
+
+    it2 = l.erase(it1);
+    it2--;
+    ASSERT_EQUAL(*it2,3);
+    it1 = it2;
+
+    it2 = l.erase(it1);
+    it2--;
+    ASSERT_EQUAL(*it2,2);
+    it1 = it2;
+
+    it2 = l.erase(it1);
+    it2--;
+    ASSERT_EQUAL(*it2,1);
+    it1 = it2;
 }
 
 /*
-op++
-++op
-erase
 insert
 */
 TEST_MAIN()
