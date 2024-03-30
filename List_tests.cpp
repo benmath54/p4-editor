@@ -196,15 +196,79 @@ TEST(test_list_assignment){
     ASSERT_TRUE(a.empty());
 }
 
+TEST(test_iterator_deref){
+    List<int> l;
+    l.push_back(1);
+    l.push_back(2);
+    l.push_back(3);
+    l.push_back(4);
+    l.push_back(5);   
+
+    List<int>::Iterator i = l.begin();
+    ASSERT_EQUAL(*i,1);
+}
+
+TEST(test_iterator_end){
+    List<int> l;
+    l.push_back(1);
+    l.push_back(2);
+    l.push_back(3);
+    l.push_back(4);
+    l.push_back(5);   
+
+    List<int>::Iterator i = l.end();
+    ASSERT_EQUAL(i,l.end());
+}
+
+TEST(test_iterator_eq){
+    List<int> l;
+    l.push_back(1);
+    l.push_back(2);
+    l.push_back(3);
+    l.push_back(4);
+    l.push_back(5);   
+    List<int> copy_l(l);
+
+    List<int>::Iterator it1 = l.begin();
+    List<int>::Iterator it2 = copy_l.begin();
+
+    ASSERT_FALSE(it1 == it2);
+    it2 = l.begin();
+    ASSERT_TRUE(it1 == it2)
+}
+
+TEST(test_iterator_neq){
+    List<int> l;
+    l.push_back(1);
+    l.push_back(2);
+    l.push_back(3);
+    l.push_back(4);
+    l.push_back(5);   
+    List<int> copy_l(l);
+
+    List<int>::Iterator it1 = l.begin();
+    List<int>::Iterator it2 = copy_l.begin();
+
+    ASSERT_TRUE(it1 != it2);
+    it2 = l.begin();
+    ASSERT_FALSE(it1 != it2)
+}
+
+TEST(test_iterator_pp){
+    List<int> l;
+    l.push_back(1);
+    l.push_back(2);
+    l.push_back(3);
+    l.push_back(4);
+    l.push_back(5); 
+    List<int>::Iterator it1 = l.begin(); 
+    ++it1;
+    ASSERT_EQUAL(*it1,2);
+}
+
 /*
-Iterator
-op*
 op++
 ++op
-op==
-op!=
-begin
-end
 erase
 insert
 */
