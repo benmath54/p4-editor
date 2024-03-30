@@ -340,7 +340,32 @@ TEST(test_iterator_erase_end){
     it1 = it2;
 }
 
-/*
-insert
-*/
+TEST(test_iterator_insert){
+    List<int> l;
+    l.push_back(1);
+    l.push_back(2);
+    l.push_back(3);
+    l.push_back(4);
+    l.push_back(5); 
+    List<int>::Iterator it1 = l.begin();
+
+    List<int>::Iterator it2 = l.insert(it1,0);
+
+    ASSERT_EQUAL(*it2,*(l.begin()))
+    l.erase(it2);
+    ASSERT_EQUAL(*it1,1);
+
+    it1 = l.end();
+    it2 = l.insert(it1,6);
+    it1 = l.end();
+    it1--;
+    ASSERT_EQUAL(*it1,6);
+}
+
+TEST(test_iterator_insert_empty){
+    List<int> l;
+    List<int>::Iterator it1 = l.begin();
+    List<int>::Iterator it2 = l.insert(it1,0);
+    ASSERT_EQUAL(*it2,*(l.begin()))
+}
 TEST_MAIN()

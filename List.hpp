@@ -310,29 +310,28 @@ public:
   //EFFECTS: Inserts datum before the element at the specified position.
   //         Returns an iterator to the the newly inserted element.
   Iterator insert(Iterator i, const T &datum){
-    if(i == begin()){
-      push_front(datum);
-      i--;
-      return i;
-    }
-    if(i == end()){
-      push_back(datum);
-      Iterator edgeb(this,last);
-      return edgeb;
+    if (i == begin()) {
+        push_front(datum);
+        return begin();
+    } else if (i == end()) {
+        push_back(datum);
+        return --end();
     }
 
-    Iterator n2 = i--;
-    Iterator n0 = i;
-    Node* n1 = new Node;
-    n1->datum = datum;
+    Node* new_node = new Node;
+    new_node->datum = datum;
 
-    n1->next = n0.node_ptr->next;
-    n0.node_ptr->next = n1;
+    Node* current_node = i.node_ptr;
+    Node* prev_node = current_node->prev;
     
-    n1->prev = n2.node_ptr->prev;
-    n2.node_ptr->prev = n1;
+    prev_node->next = new_node;
+    new_node->prev = prev_node;
+    new_node->next = current_node;
+    current_node->prev = new_node;
 
-    return Iterator(this,n1);
+    _size++;
+
+    return Iterator(this, new_node);
   }
 
 };//List
