@@ -360,12 +360,20 @@ TEST(test_iterator_insert){
     it1 = l.end();
     it1--;
     ASSERT_EQUAL(*it1,6);
+    ASSERT_TRUE(it1 == it2);
 }
 
 TEST(test_iterator_insert_empty){
     List<int> l;
     List<int>::Iterator it1 = l.begin();
     List<int>::Iterator it2 = l.insert(it1,0);
-    ASSERT_EQUAL(*it2,*(l.begin()))
+    ASSERT_EQUAL(*it2,*(l.begin()));
+}
+
+TEST(test_iterator_eq_bug6){
+    List<int> l;
+    List<int>::Iterator it1 = l.begin();
+    List<int>::Iterator it2 = l.end();
+    ASSERT_TRUE(it1 == it2);
 }
 TEST_MAIN()
