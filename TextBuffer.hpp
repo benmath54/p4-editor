@@ -12,15 +12,15 @@
 #include <list>
 #include <string>
 // Uncomment the following line to use your List implementation
-// #include "List.hpp"
+#include "List.hpp"
 
 class TextBuffer {
   // Comment out the following two lines and uncomment the two below
   // to use your List implementation
-  using CharList = std::list<char>;
-  using Iterator = std::list<char>::iterator;
-  // using CharList = List<char>;
-  // using Iterator = List<char>::Iterator;
+  //using CharList = std::list<char>;
+  //using Iterator = std::list<char>::iterator;
+  using CharList = List<char>;
+  using Iterator = List<char>::Iterator;
 
 private:
   CharList data;           // linked list that contains the characters
@@ -54,7 +54,8 @@ private:
 public:
   //EFFECTS: Creates an empty text buffer. Its cursor is at the past-the-end
   //         position, with row 1, column 0, and index 0.
-  TextBuffer();
+  TextBuffer()
+  :data(CharList()), row(1),column(0),index(0),cursor(data.end()){}
 
   //MODIFIES: *this
   //EFFECTS:  Moves the cursor one position forward and returns true,
@@ -62,7 +63,19 @@ public:
   //          in which case this does nothing and returns false.
   //NOTE:     Your implementation must update the row, column, and index
   //          if appropriate to maintain all invariants.
-  bool forward();
+  bool forward(){
+    if(cursor == data.end()){
+      return false;
+    }
+    if(*cursor == '\n'){
+      column = 0;
+      row++;
+    }
+    else{column++;}
+    cursor++;
+    index++;
+    return true;
+  }
 
   //MODIFIES: *this
   //EFFECTS:  Moves the cursor one position backward and returns true,
