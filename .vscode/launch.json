@@ -6,7 +6,7 @@
       "name": "(gdb) Launch",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/List_compile_check.exe",
+      "program": "${workspaceFolder}/List_tests.exe",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${fileDirname}",

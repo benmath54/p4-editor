@@ -49,10 +49,17 @@ public:
   void push_front(const T &datum){
     Node* new_f = new Node;
     new_f->datum = datum;
-    if(_size == 0){new_f->next = nullptr; last = new_f;}
-    else{new_f->next = first;first->prev = new_f;}
     new_f->prev = nullptr;
-    first = new_f;
+
+    if(_size == 0){
+      new_f->next =  nullptr;
+      first = last = new_f;
+    }
+    else{
+      new_f->next = first;
+      first->prev = new_f;
+      first = new_f;
+    }
 
     _size++;
   }
@@ -61,13 +68,17 @@ public:
   void push_back(const T &datum){
     Node* new_b = new Node;
     new_b->datum = datum;
-    if(_size == 0){new_b->prev = nullptr; first = last = new_b;}
+    new_b->next = nullptr;
+
+    if(_size == 0){
+      new_b->prev =  nullptr;
+      first = last = new_b;
+    }
     else{
       new_b->prev = last;
       last->next = new_b;
-      }
-    new_b->next = nullptr;
-    last = new_b;
+      last = new_b;
+    }
 
     _size++;
   }
@@ -140,7 +151,6 @@ private:
   //REQUIRES: list is empty
   //EFFECTS:  copies all nodes from other to this
   void copy_all(const List<T> &other){
-    _size = other._size;
     for(Node* p = other.first; p; p = p->next){
       push_back(p->datum);
     }

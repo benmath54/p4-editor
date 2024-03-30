@@ -160,9 +160,43 @@ TEST(test_list_copyctor){
     ASSERT_TRUE(copy_l.empty());
 }
 
+TEST(test_list_copy_null){
+    List<int> l;
+    List<int> copy_l(l);
+
+    ASSERT_TRUE(copy_l.empty());
+}
+
+TEST(test_list_assignment){
+    List<int> l;
+    l.push_front(1);
+    l.push_front(2);
+    l.push_front(3);
+    l.push_front(4);
+    l.push_front(5);    
+
+    List<int> a;
+    a.push_back(6);
+
+    a = a;
+    ASSERT_EQUAL(a.front(),6);
+
+    a = l;
+
+    ASSERT_EQUAL(a.front(),5);
+    a.pop_front();
+    ASSERT_EQUAL(a.front(),4);
+    a.pop_front();
+    ASSERT_EQUAL(a.front(),3);
+    a.pop_front();
+    ASSERT_EQUAL(a.front(),2);
+    a.pop_front();
+    ASSERT_EQUAL(a.front(),1);
+    a.pop_front();
+    ASSERT_TRUE(a.empty());
+}
+
 /*
-copyctor
-assignment
 Iterator
 op*
 op++
