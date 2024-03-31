@@ -372,8 +372,18 @@ TEST(test_iterator_insert_empty){
 
 TEST(test_iterator_eq_bug6){
     List<int> l;
-    List<int>::Iterator it1;
+    l.push_back(1);
+    l.push_back(2);
+    l.push_back(3);
+    l.push_back(4);
+    l.push_back(5); 
+    List<int>::Iterator it1 = l.begin();
     List<int>::Iterator it2;
-    ASSERT_TRUE(it1 == it2);
+
+    for(int i = 1; i <=5;i++){
+        ASSERT_FALSE(it1 == it2);
+        it1++;
+    }
+    ASSERT_TRUE(it1 == l.end());
 }
 TEST_MAIN()
