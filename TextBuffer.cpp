@@ -1,6 +1,7 @@
 #include "TextBuffer.hpp"
 #include <string>
 #include <iostream>
+#include <cassert>
 using namespace std;
 
 TextBuffer::TextBuffer()
@@ -244,14 +245,7 @@ bool TextBuffer::forward(){
 
   //EFFECTS:  Returns the number of characters in the buffer.
   int TextBuffer::size() const{
-    Iterator it1 = data.begin();
-    Iterator it2 = data.end();
-    int count = 0;
-    while(it1 != it2){
-      count++;
-      it1++;
-    }
-    return count;
+    return data.size();
   }
 
   //EFFECTS:  Returns the contents of the text buffer as a string.

@@ -385,5 +385,6 @@ TEST(test_iterator_eq_bug6){
         it1++;
     }
     ASSERT_TRUE(it1 == l.end());
+    ASSERT_FALSE(it1 == it2);
 }
 TEST_MAIN()
