@@ -2,7 +2,7 @@
 #include <string>
 
 TextBuffer::TextBuffer()
-:data(CharList()), row(1),column(0),index(0),cursor(data.end()){}
+:data(CharList()), cursor(data.begin()), row(1), column(0),index(0){}
 
 bool TextBuffer::forward(){
     if(cursor == data.end()){
@@ -28,7 +28,14 @@ bool TextBuffer::forward(){
   //NOTE:     Your implementation must update the row, column, and index
   //          if appropriate to maintain all invariants.
   bool TextBuffer::backward(){
-
+    if(cursor == data.begin()){
+      return false;
+    }
+    cursor--;
+    if(*cursor == '\n'){row--;}
+    column = compute_column();
+    index--;
+    return true;
   }
 
   //MODIFIES: *this
@@ -39,7 +46,16 @@ bool TextBuffer::forward(){
   //NOTE:     Your implementation must update the row, column, and index
   //          if appropriate to maintain all invariants.
   void TextBuffer::insert(char c){
-
+    data.insert(cursor,c);
+    if(c == '\n'){
+      row++;
+      column = 0;
+      index++;
+    }
+    else{
+      column++;
+      index++;
+    }
   }
 
   //MODIFIES: *this
@@ -52,7 +68,21 @@ bool TextBuffer::forward(){
   //NOTE:     Your implementation must update the row, column, and index
   //          if appropriate to maintain all invariants.
   bool TextBuffer::remove(){
-
+    if(cursor == data.end()){
+      return false;
+    }
+    char c = *cursor;
+    data.erase(cursor);
+    if(c == '\n'){
+      index--;
+      row--;
+      column = compute_column();
+    }
+    else{
+      index--;
+      column--;
+    }
+    return true;
   }
 
   //MODIFIES: *this
@@ -60,7 +90,11 @@ bool TextBuffer::forward(){
   //NOTE:     Your implementation must update the row, column, and index
   //          if appropriate to maintain all invariants.
   void TextBuffer::move_to_row_start(){
-
+    while(column > 0){
+      column--;
+      cursor--;
+      index--;
+    }
   }
 
   //MODIFIES: *this
@@ -70,7 +104,11 @@ bool TextBuffer::forward(){
   //NOTE:     Your implementation must update the row, column, and index
   //          if appropriate to maintain all invariants.
   void TextBuffer::move_to_row_end(){
-
+    while(*cursor != '\n' && cursor != data.end()){
+      cursor++;
+      column++;
+      index++;
+    }
   }
 
   //REQUIRES: new_column >= 0
@@ -83,7 +121,21 @@ bool TextBuffer::forward(){
   //NOTE:     Your implementation must update the row, column, and index
   //          if appropriate to maintain all invariants.
   void TextBuffer::move_to_column(int new_column){
-
+    assert(new_column >= 0);
+    if(new_column > column){
+      while(column != new_column&&*cursor != '\n'&&cursor != data.end()){
+        column++;
+        index++;
+        cursor++;
+      }
+    }
+    else if(new_column < column){
+      while(column != new_column&&cursor != data.begin()){
+        column--;
+        index--;
+        cursor--;
+      }
+    }
   }
 
   //MODIFIES: *this
@@ -97,7 +149,29 @@ bool TextBuffer::forward(){
   //NOTE:     Your implementation must update the row, column, and index
   //          if appropriate to maintain all invariants.
   bool TextBuffer::up(){
+    int current_column = column;
+    Iterator it1 = cursor;
+    int count = 0;
+    while(*it1 != '\n'||it1 != data.begin()){
+      it1--;
+      count++;
+    }
+    if(it1 == data.begin()){return false;}
+    cursor = it1;
+    cursor--;
+    column = compute_column();
+    index = index -count;
+    row--;
+    if(current_column > column){
+      return true;
+    }
 
+    while(column != current_column && *cursor != '\n' && cursor != data.end()){
+      cursor--;
+      column--;
+      index--;
+    } 
+    return true;
   }
 
   //MODIFIES: *this
@@ -112,12 +186,31 @@ bool TextBuffer::forward(){
   //NOTE:     Your implementation must update the row, column, and index
   //          if appropriate to maintain all invariants.
   bool TextBuffer::down(){
+    int current_column = column;
+    Iterator it1 = cursor;
+    int count = 0;
+    while(*it1 != '\n'||it1 != data.end()){
+      it1++;
+      count++;
+    }
+    if(it1 == data.end()){return false;}
+    cursor = it1;
+    cursor++;
+    column = 0;
+    index = index + count;
+    row++;
 
+    while(column != current_column && *cursor != '\n' && cursor != data.end()){
+      cursor++;
+      column++;
+      index++;
+    } 
+    return true;
   }
 
   //EFFECTS:  Returns whether the cursor is at the past-the-end position.
   bool TextBuffer::is_at_end() const{
-
+    return cursor == data.end();
   }
 
   //REQUIRES: the cursor is not at the past-the-end position
@@ -140,12 +233,21 @@ bool TextBuffer::forward(){
   //          with respect to the entire contents. If the cursor is at
   //          the past-the-end position, returns size() as the index.
   int TextBuffer::get_index() const{
+    if(cursor == data.end()){
+      return size();
+    }
     return index;
   }
 
   //EFFECTS:  Returns the number of characters in the buffer.
   int TextBuffer::size() const{
-
+    Iterator it1 = data.begin();
+    Iterator it2 = data.end();
+    int count = 0;
+    while(it1 != it2){
+      count++;
+    }
+    return count;
   }
 
   //EFFECTS:  Returns the contents of the text buffer as a string.
@@ -153,12 +255,20 @@ bool TextBuffer::forward(){
   //      begin and end iterator. You may use this implementation:
   //        return std::string(data.begin(), data.end());
   std::string TextBuffer::stringify() const{
-
+    return std::string(data.begin(),data.end());
   }
 
   //EFFECTS: Computes the column of the cursor within the current row.
   //NOTE: This does not assume that the "column" member variable has
   //      a correct value (i.e. the row/column INVARIANT can be broken).
   int TextBuffer::compute_column() const{
-
+    Iterator it1 = cursor;
+    if(it1 == data.begin()){return 0;}
+    int pos = 0;
+    it1--;
+    while(*it1 != '\n'){
+      it1--;
+      pos++;
+    }
+    return pos;
   }
