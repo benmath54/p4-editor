@@ -49,6 +49,7 @@ bool TextBuffer::forward(){
   //NOTE:     Your implementation must update the row, column, and index
   //          if appropriate to maintain all invariants.
   void TextBuffer::insert(char c){
+    data.insert(cursor,c);
     if(c == '\n'){
       row++;
       column = 0;
@@ -58,7 +59,6 @@ bool TextBuffer::forward(){
       column++;
       index++;
     }
-    data.insert(cursor,c);
   }
 
   //MODIFIES: *this

@@ -190,11 +190,15 @@ public:
     }
 
     bool operator==(Iterator rhs) const{
-      return node_ptr == rhs.node_ptr;
+      bool n = node_ptr == rhs.node_ptr;
+      bool l = list_ptr == rhs.list_ptr;
+      return n&l;
     }
 
     bool operator!=(Iterator rhs) const{
-      return node_ptr != rhs.node_ptr;
+      bool n = node_ptr == rhs.node_ptr;
+      bool l = list_ptr == rhs.list_ptr;
+      return !(n&l);
     }
 
 
