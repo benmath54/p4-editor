@@ -8,15 +8,15 @@ TextBuffer::TextBuffer()
 :data(CharList()), cursor(data.begin()), row(1), column(0),index(0){}
 
 bool TextBuffer::forward(){
+    cursor++;
     if(cursor == data.end()){
       return false;
     }
-    if(*cursor == '\n'){
+    else if(*cursor == '\n'){
       column = 0;
       row++;
     }
     else{column++;}
-    cursor++;
     index++;
     return true;
   }
@@ -163,7 +163,7 @@ bool TextBuffer::forward(){
     if(it1 == data.begin()){return false;}
     cursor = it1;
     cursor--;
-    column = compute_column() + dummy;
+    column = compute_column()+dummy;
     index = index -count;
     row--;
     if(current_column > column){
@@ -201,7 +201,7 @@ bool TextBuffer::forward(){
     cursor = it1;
     cursor++;
     column = 0;
-    index = index + count+1;
+    index = index + count;
     row++;
 
     while(column != current_column && cursor != data.end()&& *cursor != '\n'){
@@ -220,6 +220,7 @@ bool TextBuffer::forward(){
   //REQUIRES: the cursor is not at the past-the-end position
   //EFFECTS:  Returns the character at the current cursor
   char TextBuffer::data_at_cursor() const{
+    assert(cursor != data.end());
     return *cursor;
   }
 
@@ -264,11 +265,13 @@ bool TextBuffer::forward(){
     Iterator it1 = cursor;
     if(it1 == data.begin()){return 0;}
     int pos = 0;
+    if(*it1 == '\n'){
     it1--;
+    pos++;
+    }
     while(*it1 != '\n'&&it1 != data.begin()){
       it1--;
       pos++;
     }
-    pos++;
     return pos;
   }

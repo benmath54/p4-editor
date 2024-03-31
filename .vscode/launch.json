@@ -6,7 +6,7 @@
       "name": "(gdb) Launch",
       "type": "cppdbg",
       "request": "launch",
-      "program": "${workspaceFolder}/TextBuffer_tests.exe",
+      "program": "${workspaceFolder}/line.exe",
       "args": [],
       "stopAtEntry": false,
       "cwd": "${fileDirname}",
