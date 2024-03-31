@@ -1,5 +1,7 @@
 #include "TextBuffer.hpp"
 #include <string>
+#include <iostream>
+using namespace std;
 
 TextBuffer::TextBuffer()
 :data(CharList()), cursor(data.begin()), row(1), column(0),index(0){}
@@ -46,7 +48,6 @@ bool TextBuffer::forward(){
   //NOTE:     Your implementation must update the row, column, and index
   //          if appropriate to maintain all invariants.
   void TextBuffer::insert(char c){
-    data.insert(cursor,c);
     if(c == '\n'){
       row++;
       column = 0;
@@ -56,6 +57,7 @@ bool TextBuffer::forward(){
       column++;
       index++;
     }
+    data.insert(cursor,c);
   }
 
   //MODIFIES: *this
@@ -72,15 +74,11 @@ bool TextBuffer::forward(){
       return false;
     }
     char c = *cursor;
-    data.erase(cursor);
+    cursor = data.erase(cursor);
     if(c == '\n'){
       index--;
       row--;
       column = compute_column();
-    }
-    else{
-      index--;
-      column--;
     }
     return true;
   }
@@ -104,7 +102,7 @@ bool TextBuffer::forward(){
   //NOTE:     Your implementation must update the row, column, and index
   //          if appropriate to maintain all invariants.
   void TextBuffer::move_to_row_end(){
-    while(*cursor != '\n' && cursor != data.end()){
+    while(cursor != data.end()&& *cursor != '\n'){
       cursor++;
       column++;
       index++;
@@ -152,21 +150,26 @@ bool TextBuffer::forward(){
     int current_column = column;
     Iterator it1 = cursor;
     int count = 0;
-    while(*it1 != '\n'||it1 != data.begin()){
+    int dummy = 0;
+    if(it1 == data.end()){
+      it1--;
+      dummy++;
+    }
+    while(it1 != data.begin()&& *it1 != '\n'){
       it1--;
       count++;
     }
     if(it1 == data.begin()){return false;}
     cursor = it1;
     cursor--;
-    column = compute_column();
+    column = compute_column() + dummy;
     index = index -count;
     row--;
     if(current_column > column){
       return true;
     }
 
-    while(column != current_column && *cursor != '\n' && cursor != data.end()){
+    while(cursor != data.end() && column != current_column && *cursor != '\n'){
       cursor--;
       column--;
       index--;
@@ -189,7 +192,7 @@ bool TextBuffer::forward(){
     int current_column = column;
     Iterator it1 = cursor;
     int count = 0;
-    while(*it1 != '\n'||it1 != data.end()){
+    while(*it1 != '\n'&&it1 != data.end()){
       it1++;
       count++;
     }
@@ -197,10 +200,10 @@ bool TextBuffer::forward(){
     cursor = it1;
     cursor++;
     column = 0;
-    index = index + count;
+    index = index + count+1;
     row++;
 
-    while(column != current_column && *cursor != '\n' && cursor != data.end()){
+    while(column != current_column && cursor != data.end()&& *cursor != '\n'){
       cursor++;
       column++;
       index++;
@@ -246,6 +249,7 @@ bool TextBuffer::forward(){
     int count = 0;
     while(it1 != it2){
       count++;
+      it1++;
     }
     return count;
   }
@@ -254,8 +258,9 @@ bool TextBuffer::forward(){
   //HINT: Implement this using the string constructor that takes a
   //      begin and end iterator. You may use this implementation:
   //        return std::string(data.begin(), data.end());
-  std::string TextBuffer::stringify() const{
-    return std::string(data.begin(),data.end());
+  string TextBuffer::stringify() const{
+    string s = string(data.begin(),data.end());
+    return s;
   }
 
   //EFFECTS: Computes the column of the cursor within the current row.
@@ -266,9 +271,10 @@ bool TextBuffer::forward(){
     if(it1 == data.begin()){return 0;}
     int pos = 0;
     it1--;
-    while(*it1 != '\n'){
+    while(*it1 != '\n'&&it1 != data.begin()){
       it1--;
       pos++;
     }
+    pos++;
     return pos;
   }
