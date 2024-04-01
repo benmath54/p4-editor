@@ -8,7 +8,6 @@ TextBuffer::TextBuffer()
 :data(CharList()), cursor(data.begin()), row(1), column(0),index(0){}
 
 bool TextBuffer::forward(){
-    cursor++;
     if(cursor == data.end()){
       return false;
     }
@@ -17,6 +16,7 @@ bool TextBuffer::forward(){
       row++;
     }
     else{column++;}
+    cursor++;
     index++;
     return true;
   }
@@ -35,7 +35,9 @@ bool TextBuffer::forward(){
       return false;
     }
     cursor--;
-    if(*cursor == '\n'){row--;}
+    if(*cursor == '\n'){
+      row--;
+      }
     column = compute_column();
     index--;
     return true;
@@ -263,15 +265,18 @@ bool TextBuffer::forward(){
   //      a correct value (i.e. the row/column INVARIANT can be broken).
   int TextBuffer::compute_column() const{
     Iterator it1 = cursor;
-    if(it1 == data.begin()){return 0;}
-    int pos = 0;
+    Iterator it2 = cursor;
+    if(it2 != data.begin()){it2--;}
+    int col = 0;
     if(*it1 == '\n'){
-    it1--;
-    pos++;
-    }
-    while(*it1 != '\n'&&it1 != data.begin()){
       it1--;
-      pos++;
+      col++;
+      if(it2 != data.begin()){it2--;}
     }
-    return pos;
+    while(it1 != data.begin()&&*it2 != '\n'){
+      it1--;
+      col++;
+      if(it2 != data.begin()){it2--;}
+    }
+    return col;
   }

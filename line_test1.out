@@ -33,9 +33,9 @@ up    : steady|	:(1,6 )
 enter : steady\n|	:(2,0 )
 left  : steady|\n	:(1,6 )
 left  : stead|y\n	:(1,5 )
-enter : stead\n|y\n	:(2,1 )
-up    : s|tead\ny\n	:(1,1 )
-up    : s|tead\ny\n	:(1,1 )
+enter : stead\n|y\n	:(2,0 )
+up    : |stead\ny\n	:(1,0 )
+up    : |stead\ny\n	:(1,0 )
 
 Done. More input? (empty line quits):
 Goodbye.
