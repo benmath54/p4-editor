@@ -78,7 +78,10 @@ bool TextBuffer::forward(){
     }
     char c = *cursor;
     cursor = data.erase(cursor);
-    if(c == '\n'){
+    if(c=='\n'&& cursor == data.end()){
+      index--;
+    }
+    else if(c == '\n'){
       index--;
       row--;
       column = compute_column();
@@ -153,30 +156,41 @@ bool TextBuffer::forward(){
     int current_column = column;
     Iterator it1 = cursor;
     int count = 0;
-    int dummy = 0;
     if(it1 == data.end()){
       it1--;
-      dummy++;
     }
     while(it1 != data.begin()&& *it1 != '\n'){
       it1--;
       count++;
     }
     if(it1 == data.begin()){return false;}
+    it1--;
     cursor = it1;
-    cursor--;
-    column = compute_column()+dummy;
     index = index -count;
     row--;
-    if(current_column > column){
-      return true;
+    
+    int new_column = 0;
+    if(cursor != data.begin() && *cursor == '\n'){
+      it1--;
+      new_column++;
     }
+    while(it1 != data.begin()&& *it1 != '\n'){
+      it1--;
+      new_column++;
+    }
+    if(current_column >= new_column){ column = new_column+1;}
+    else{
+      column = compute_column();
+    index = index -count;
+    if(it1 != data.begin()){it1--;}
 
-    while(cursor != data.end() && column != current_column && *cursor != '\n'){
+    while(cursor != data.end() && column != current_column && *it1 != '\n'){
       cursor--;
       column--;
       index--;
+      if(it1 != data.begin()){it1--;}
     } 
+    }
     return true;
   }
 
@@ -266,9 +280,11 @@ bool TextBuffer::forward(){
   int TextBuffer::compute_column() const{
     Iterator it1 = cursor;
     Iterator it2 = cursor;
+    Iterator it3 = cursor;
     if(it2 != data.begin()){it2--;}
+    if(it3 != data.end()){it3++;}
     int col = 0;
-    if(*it1 == '\n'){
+    if(*it1 == '\n'&&it3 != data.end()){
       it1--;
       col++;
       if(it2 != data.begin()){it2--;}
